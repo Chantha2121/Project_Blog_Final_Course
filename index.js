@@ -2,6 +2,7 @@ import express from 'express';
 import { config } from 'dotenv';
 import pool from './src/db/databaseConnection.js';
 import authenticationRoute from './src/routes/authenticationRoute.js';
+import { verify_token } from './src/utils/verify_token.js';
 
 config();
 
@@ -20,7 +21,7 @@ pool.getConnection((err, connection)=>{
 
 app.use('/auth',authenticationRoute)
 
-app.get('/', (req, res)=>{
+app.get('/',verify_token , (req, res)=>{
     res.send(`Hello World!`);
 })
 
