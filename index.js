@@ -1,6 +1,7 @@
 import express from 'express';
 import { config } from 'dotenv';
 import pool from './src/db/databaseConnection.js';
+import authenticationRoute from './src/routes/authenticationRoute.js';
 
 config();
 
@@ -16,6 +17,8 @@ pool.getConnection((err, connection)=>{
     console.log(`Database is connected`)
     connection.release();
 })
+
+app.use('/auth',authenticationRoute)
 
 app.get('/', (req, res)=>{
     res.send(`Hello World!`);
