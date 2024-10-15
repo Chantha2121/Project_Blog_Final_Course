@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import {config} from 'dotenv'
 import pool from '../db/databaseConnection.js';
 import { generate_token } from '../utils/generate_token.js';
+import { isverify } from '../utils/verify_password.js';
 config();
 export const controllerSignup = async (req, res)=>{
     const profile_image = req.file;
@@ -40,6 +41,33 @@ export const controllerLogin = (req, res) => {
     if(!email && !password) {
         return res.status(404).json({
             message: 'Data is invalid',
+        })
+    }
+    try{
+        let sql = "SELECT * FROM user WHERE email = ?";
+        pool.query(sql,[email], (err, row)=>{
+            if(err){
+                return res.status(500).json({
+                    message: err.message
+                })
+            }
+            const user = row[0];
+            const ispassword = isverify(password, user.password);
+            if(!ispassword){
+                return res.status(500).json({
+                    message: err.message
+                })
+            }
+            const token = generate_token({username: user.username});
+            res.status(200).json({
+                token: token,
+                message: 'Login successfully'
+            })
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            message: 'Error: ' + err.message
         })
     }
 }

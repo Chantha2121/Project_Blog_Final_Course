@@ -4,6 +4,6 @@ import { controllerLogin, controllerSignup } from "../controller/authenticationC
 const authenticationRoute = Router();
 
 authenticationRoute.post('/signup',upload.single('image_profile'),controllerSignup);
-authenticationRoute.post('login',controllerLogin);
+authenticationRoute.post('/login',controllerLogin);
 
 export default authenticationRoute;
