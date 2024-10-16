@@ -105,3 +105,26 @@ export const createBlog = (req, res) => {
 };
 
 // update blog 
+export const updateBlog = (req, res) => {
+    const authenticationUser = req.user;
+    const {id} = req.params;
+    const content_image = req.file;
+    const {title, content} = req.body;
+    if(!authenticationUser && !content && !title && !content_image){
+        return res.status(404).json({
+            message : "data is invalid"
+        })
+    }
+    let sql = "UPDATE blog SET title = ? , content = ? , image = ? WHERE id = ? AND authorId = (SELECT id FROM user WHERE username = ?)";
+    pool.query(sql, [title, content, content_image.filename, id, authenticationUser],(error, row)=>{
+        if (error) {
+            return res.status(500).json({
+                message: error.message
+            });
+        }
+        res.status(200).json({
+            message: "Updated blog is successfully",
+            data : row
+        })
+    })
+}
