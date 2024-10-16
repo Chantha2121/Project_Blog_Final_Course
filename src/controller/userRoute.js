@@ -44,3 +44,25 @@ export const editUserController = (req, res) => {
         })
     })
 }
+
+// Delete user
+export const deleteUserController = (req, res) => {
+    const authenticationUser = req.user;
+    let sql = "DELETE FROM user WHERE username = ? ";
+    if(!authenticationUser){
+        return res.status(404).json({
+            message : "authentication is invalid"
+        })
+    }
+    pool.query(sql, authenticationUser, (error, result)=>{
+        if(error){
+            return res.status(500).json({
+                message : error.message
+            })
+        }
+        res.status(200).json({
+            message : "Deleted user is successfully",
+            data: result
+        })
+    })
+}
