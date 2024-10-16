@@ -3,6 +3,7 @@ import { config } from 'dotenv';
 import pool from './src/db/databaseConnection.js';
 import authenticationRoute from './src/routes/authenticationRoute.js';
 import { verify_token } from './src/utils/verify_token.js';
+import userRoute from './src/routes/userRounter.js';
 
 config();
 
@@ -20,6 +21,7 @@ pool.getConnection((err, connection)=>{
 })
 
 app.use('/auth',authenticationRoute)
+app.use('/user',userRoute)
 
 app.get('/',verify_token , (req, res)=>{
     res.send(`Hello World!`);
