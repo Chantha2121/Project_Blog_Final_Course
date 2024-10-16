@@ -20,6 +20,28 @@ export const getAllBlog = (req, res) => {
         })
     })
 }
+// Get Blog by id 
+export const getBlogById = (req, res) => {
+    const authenticationUser = req.user
+    const { id } = req.params
+    if(!authenticationUser){
+        return res.status(404).json({
+            message : "authentication is invalid"
+        })
+    }
+    let sql = "SELECT * FROM blog WHERE id = ? AND authorId = (SELECT id FROM user WHERE username = ?)"
+    pool.query(sql,[id, authenticationUser], (error, row) => {
+        if(error){
+            return res.status(404).json({
+                message : error.message
+            })
+        }
+        res.status(200).json({
+            message : `Get data in blog id ${id}`,
+            data: row
+        })
+    })
+}
 
 // Create Blog 
 export const createBlog = (req, res) => {
@@ -81,3 +103,5 @@ export const createBlog = (req, res) => {
         });
     }
 };
+
+// update blog 
